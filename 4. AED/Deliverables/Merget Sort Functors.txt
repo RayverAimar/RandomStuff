@@ -1,0 +1,103 @@
+#include <iostream>
+#include <ctime>
+
+using namespace std;
+
+void cambio(int* a, int* b) {
+    int c = *a;
+    *a = *b;
+    *b = c;
+}
+class comparacion {
+public:
+    static bool ascendente(int a, int b)
+    {
+        return a < b;
+    }
+    static bool descendente(int a, int b) {
+        return a > b;
+    }
+};
+
+void merge(int arr[], int l, int m, int r, bool(*pf)(int, int))
+{
+    int n1 = m - l + 1;
+    int n2 = r - m;
+
+    int* L = new int[n1];
+    int* R = new int[n2];
+
+    for (int i = 0; i < n1; i++)
+        L[i] = arr[l + i];
+    for (int j = 0; j < n2; j++)
+        R[j] = arr[m + 1 + j];
+
+    int i = 0, j = 0, k = l;
+
+    while (i < n1 && j < n2) {
+        if (pf(L[i], R[j])) {
+            arr[k] = L[i];
+            i++;
+        }
+        else {
+            arr[k] = R[j];
+            j++;
+        }
+        k++;
+    }
+
+    while (i < n1) {
+        arr[k] = L[i];
+        i++;
+        k++;
+    }
+
+    while (j < n2) {
+        arr[k] = R[j];
+        j++;
+        k++;
+    }
+}
+
+void mergeSort(int arr[], int l, int r, bool(*pf)(int, int)) {
+    if (l >= r) {
+        return;
+    }
+    int m = l + (r - l) / 2;
+    mergeSort(arr, l, m, pf);
+    mergeSort(arr, m + 1, r, pf);
+    merge(arr, l, m, r, pf);
+}
+
+void printArray(int A[], int size)
+{
+    for (int* p = A; p < A + size; p++)
+        cout << *p << " ";
+}
+
+int main() {
+    unsigned t0, t1;
+    const int arr_size = 10;
+    int arr[arr_size] = { 4,8,11,5,6,3,4,10,2,7 };
+
+    cout << "Array Desordenado -> ";
+    printArray(arr, arr_size);
+    
+    cout << "\n\nArray Ascendente -> ";
+    t0 = clock();
+    mergeSort(arr, 0, arr_size - 1,&comparacion::ascendente);
+    t1 = clock();
+    printArray(arr, arr_size);
+    double time = (double(t1 - t0) / CLOCKS_PER_SEC);
+    cout << " -> Tiempo invertido -> " << time << endl;
+
+    cout << "\nArray Descendente -> ";
+    t0 = clock();
+    mergeSort(arr, 0, arr_size - 1, &comparacion::descendente);
+    t1 = clock();
+    printArray(arr, arr_size);
+    double time1 = (double(t1 - t0) / CLOCKS_PER_SEC);
+    cout << " -> Tiempo invertido -> " << time1 << endl;
+
+    return 0;
+}
