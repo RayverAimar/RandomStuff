@@ -64,7 +64,7 @@ int n_factors(int N){
 
 
 int main(){
-    ios_base::sync_with_stdio(false); cin.tie(NULL);
+    ios_base::sync_with_stdio(false); cin.tie(0);
     sieve(35000);
     tt{
         cin>>l>>u;
@@ -76,6 +76,6 @@ int main(){
                 p = i;
             }
         }
-        cout<<"Between " <<l<< " and " <<u<<", "<<p<<" has a maximum of "<<d<<" divisors."<<endl;
+        cout<<"Between " <<l<< " and " <<u<<", "<<p<<" has a maximum of "<<d<<" divisors.\n";
     }
 }
