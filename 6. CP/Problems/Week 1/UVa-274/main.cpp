@@ -30,7 +30,7 @@ const int ms = 1e9 +5;
 
 ll sieve_size;
 bitset<ms> bs;
-vi primes;
+vl primes;
 int l, u;
 
 void sieve(ll upperbound){
@@ -38,10 +38,10 @@ void sieve(ll upperbound){
     ll square_root =  sqrt(sieve_size);
     bs.set(); bs.set(0, false); bs.set(1, false);
     FORN(i,2,sieve_size)
-        if(bs.test((size_t)i)){
+        if(bs.test((ll)i)){
             if(i <= square_root){
                 for(ll j = i * i; j < sieve_size; j+=i)
-                    bs.set((size_t)j, false);
+                    bs.set(j, false);
             }
             primes.emplace_back(i);
         }
@@ -65,7 +65,7 @@ int n_factors(int N){
 
 int main(){
     ios_base::sync_with_stdio(false); cin.tie(0);
-    sieve(35000);
+    sieve(33000);
     tt{
         cin>>l>>u;
         int p=0, d = 0;
