@@ -33,7 +33,6 @@ vector<vector<size_t>> graph;
 size_t n_nodes;
 vector<bool> visited;
 
-
 void dfs(int u){
     visited[u]= true;
     for(int neighbor : graph[u]){
@@ -67,11 +66,10 @@ int main(){
         string str;
         cin.ignore();
         while(getline(cin, str) && str != ""){
-            graph[node_names[str[0]]].push_back(node_names[str[1]]);
-            graph[node_names[str[1]]].push_back(node_names[str[0]]);
+            graph[node_names[str[0]]].pb(node_names[str[1]]);
+            graph[node_names[str[1]]].pb(node_names[str[0]]);
         }
         cout << connected_components()<<"\n";
         if(testcase) cout<<"\n";
-    }
-    
+    }   
 }
