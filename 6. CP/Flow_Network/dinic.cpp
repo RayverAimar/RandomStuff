@@ -15,22 +15,25 @@
 #include <bitset>
 #include <tuple>
 #include <fstream>
-
 using namespace std;
-
+ 
 #define FORN(i,m,n) for(int i=(m); i<int(n); ++i)
-
-
+#define PRINTARR(a,n) FORN(i,0,n) cout<<a[i]<<" "; cout<<endl
+#define PRINTVEC(v) FORN(i,0,v.size()) cout<<v[i]<<" "; cout<<endl
+#define PRINTMAT(m) FORN(j,0,m.size()) {PRINTVEC(m[j]);}
+ 
+typedef long long ll;
+ 
 struct FlowEdge {
     int v, u;
-    long long cap, flow = 0;
-    FlowEdge(int v, int u, long long cap) : v(v), u(u), cap(cap) {}
+    ll cap, flow = 0;
+    FlowEdge(int v, int u, ll cap) : v(v), u(u), cap(cap) {}
 };
  
 struct Dinic {
-    const long long flow_inf = 1e18;
+    const ll flow_inf = 1e18;
     vector<FlowEdge> edges;
-    vector<vector<int>> adj;
+    vector<vector<int> > adj;
     int n, m = 0;
     int s, t;
     vector<int> level, ptr;
@@ -42,7 +45,7 @@ struct Dinic {
         ptr.resize(n);
     }
  
-    void add_edge(int v, int u, long long cap) {
+    void add_edge(int v, int u, ll cap) {
         edges.emplace_back(v, u, cap);
         edges.emplace_back(u, v, 0);
         adj[v].push_back(m);
@@ -51,13 +54,13 @@ struct Dinic {
     }
  
     bool bfs() {
-        while (!q.empty()) {
+        while(!q.empty()) {
             int v = q.front();
             q.pop();
-            for (int id : adj[v]) {
-                if (edges[id].cap - edges[id].flow < 1)
+            for(int id : adj[v]) {
+                if(edges[id].cap - edges[id].flow < 1)
                     continue;
-                if (level[edges[id].u] != -1)
+                if(level[edges[id].u] != -1)
                     continue;
                 level[edges[id].u] = level[v] + 1;
                 q.push(edges[id].u);
@@ -66,7 +69,7 @@ struct Dinic {
         return level[t] != -1;
     }
  
-    long long dfs(int v, long long pushed) {
+    ll dfs(int v, ll pushed) {
         if (pushed == 0)
             return 0;
         if (v == t)
@@ -76,7 +79,7 @@ struct Dinic {
             int u = edges[id].u;
             if (level[v] + 1 != level[u] || edges[id].cap - edges[id].flow < 1)
                 continue;
-            long long tr = dfs(u, min(pushed, edges[id].cap - edges[id].flow));
+            ll tr = dfs(u, min(pushed, edges[id].cap - edges[id].flow));
             if (tr == 0)
                 continue;
             edges[id].flow += tr;
@@ -86,32 +89,40 @@ struct Dinic {
         return 0;
     }
  
-    long long flow() {
-        long long f = 0;
-        while (true) {
+    ll flow() {
+        ll f = 0;
+        while(true){
             fill(level.begin(), level.end(), -1);
             level[s] = 0;
             q.push(s);
-            if (!bfs())
+            if(!bfs())
                 break;
             fill(ptr.begin(), ptr.end(), 0);
-            while (long long pushed = dfs(s, flow_inf)) {
+            while(ll pushed = dfs(s, flow_inf)) {
                 f += pushed;
             }
         }
         return f;
     }
 };
-
+ 
 int main(){
-    ios_base::sync_with_stdio(false); cin.tie(NULL);
-    int n, m;
-    cin>>n>>m;
-    Dinic dinic(n+2,n,n+1);
-    FORN(i,0,m){
-        int s, t, cap;
-        cin>>s>>t>>cap;
-        dinic.add_edge(s,t,cap);
+    ios::sync_with_stdio(0);
+    cin.tie(0); cout.tie(0);
+ 
+    int x, y;
+    cin >> x >> y;
+ 
+    Dinic solve(x, 0, x-1);
+ 
+    for(int i = 0; i < y; i++){
+        int u, v, c;
+        cin >> u >> v >> c;
+        solve.add_edge(u-1, v-1, c);
     }
+ 
+
+    cout << solve.flow() << '\n';
+ 
     return 0;
 }
